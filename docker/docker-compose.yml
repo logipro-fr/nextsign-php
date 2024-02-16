@@ -1,0 +1,30 @@
+services:
+  nextsign-php-php:
+    container_name: "nextsign-php-php"
+    image: nextsign-php-php:latest
+    build:
+      context: .
+      dockerfile: php/Dockerfile
+      tags:
+        - latest
+    user: 1000:1000
+    volumes:
+      - ../../log:/var/nextsign-php/log
+      - "$PWD/..:/var/nextsign-php"
+      - "$PWD/..:$PWD/.."
+    working_dir: $PWD/..
+    networks:
+      - nextsign-php-network
+
+networks:
+  nextsign-php-network:
+    driver: bridge
+    name: nextsign-php-network
+    enable_ipv6: true
+    ipam:
+      config:
+        - subnet: fd00:2:22::/112
+          gateway: fd00:2:22::1
+
+volumes:
+  nextsign-php-db:
