@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 #bin/local-php-security-checker composer.lock
 

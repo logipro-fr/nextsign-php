@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 cmd=$(docker container ls | grep nextsign-php-php)
 status=$?
