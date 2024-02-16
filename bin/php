@@ -7,7 +7,7 @@ then
 docker exec \
     -ti \
     -e APP_ENV=test \
-    nextsign-php php $@
+    nextsign-php-php php $@
 else
 ## execution de PHP de manière autonome (pas besoin d'un environnement de containers)
 docker run \
