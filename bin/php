@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 cmd=$(docker container ls | grep nextsign-php-php)
 status=$?
@@ -7,7 +7,7 @@ then
 docker exec \
     -ti \
     -e APP_ENV=test \
-    nextsign-php-php php $@
+    nextsign-php php $@
 else
 ## execution de PHP de manière autonome (pas besoin d'un environnement de containers)
 docker run \

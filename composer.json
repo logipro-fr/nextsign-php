@@ -32,8 +32,7 @@
     "autoload-dev": {
         "psr-4" : {
             "NextSignPHP\\Tests\\" : "tests/unit",
-            "NextSignPHP\\Tests\\Integration\\" : "tests/integration",
-            "NextSignPHP\\Tests\\Features\\" : "tests/features"
+            "NextSignPHP\\Tests\\Integration\\" : "tests/integration"
         }
     },
     "config": {
