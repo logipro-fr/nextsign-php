@@ -9,9 +9,7 @@ default:
     default:
       paths: ["%paths.base%/features/"]
       contexts:
-        - Features\VisualizePointsContext
-        - Features\CreateMapContext
-        - Features\SearchMapsContext
+        - features\InstanciateContext
 #  extensions:
 #    DVDoug\Behat\CodeCoverage\Extension:
 #      filter:
