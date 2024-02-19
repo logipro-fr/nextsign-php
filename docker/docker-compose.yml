@@ -14,17 +14,13 @@ services:
       - "$PWD/..:$PWD/.."
     working_dir: $PWD/..
     networks:
-      - nextsign-php-network
+      - nextsign-networks
 
 networks:
-  nextsign-php-network:
+  nextsign-networks:
     driver: bridge
-    name: nextsign-php-network
     enable_ipv6: true
     ipam:
       config:
-        - subnet: fd00:2:22::/112
-          gateway: fd00:2:22::1
-
-volumes:
-  nextsign-php-db:
+        - subnet: fd00:1:1::/112
+          gateway: fd00:1:1::1

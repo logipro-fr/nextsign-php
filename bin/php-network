@@ -1,6 +1,7 @@
 #!/bin/bash
 
 cmd=$(docker network ls | grep sign-networks)
+
 ## execution de PHP de manière autonome (pas besoin d'un environnement de containers)
 docker run \
     --init \
@@ -10,4 +11,5 @@ docker run \
     -v "$PWD":"$PWD" \
     --user 1000:1000 \
     -w "$PWD" \
+    --network docker_nextsign-networks \
     nextsign-php-interpreter php $@
