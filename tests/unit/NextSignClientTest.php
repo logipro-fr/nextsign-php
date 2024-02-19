@@ -15,18 +15,35 @@ class NextSignClientTest extends TestCase
     {
         $id = "634d74c96825d";
         $secret = "sk_example1234";
-        $mockhttp = $this->createMock(HttpClientInterface::class);
 
+        $mockhttp = $this->createMock(HttpClientInterface::class);
         $mockResponse = $this->createMock(ResponseInterface::class);
         $mockResponse->method("getContent")->willReturn('{"token": "example"}');
-        $mockResponse->method("getStatusCode")->willReturn(200);
         $mockhttp->method("request")->willReturn($mockResponse);
-        
+
         $client = new NextSignClient($id, $secret, $mockhttp);
-        
+
         $this->assertInstanceOf(NextSignClient::class, $client);
         $reflector = new ReflectionClass(NextSignClient::class);
-        $this->assertEquals("example",$reflector->getProperty("token")->getValue($client));
+        $this->assertEquals("example", $reflector->getProperty("token")->getValue($client));
+    }
+
+    public function testCreateCustomUrl(): void
+    {
+        $id = "634d74c96825d";
+        $secret = "sk_example1234";
+
+        $mockhttp = $this->createMock(HttpClientInterface::class);
+        $mockResponse = $this->createMock(ResponseInterface::class);
+        $mockResponse->method("getContent")->willReturn('{"token": "example"}');
+        $mockhttp->method("request")->willReturn($mockResponse);
+
+        $client = new NextSignClient($id, $secret, $mockhttp, "http://example.com");
+
+        $this->assertInstanceOf(NextSignClient::class, $client);
+        $reflector = new ReflectionClass(NextSignClient::class);
+        $this->assertEquals("example", $reflector->getProperty("token")->getValue($client));
+        $this->assertEquals("http://example.com/", $reflector->getProperty("baseApiUrl")->getValue($client));
     }
 
     public function testFailCreateInternalServer(): void
@@ -42,7 +59,7 @@ class NextSignClientTest extends TestCase
             ->willThrowException(new UnauthorizedHttpException('Basic realm="access to the API'));
         $mockResponse->method("getStatusCode")->willReturn(401);
         $mockhttp->method("request")->willReturn($mockResponse);
-        
+
         new NextSignClient($id, $secret, $mockhttp);
     }
 }
