@@ -3,17 +3,17 @@
 namespace NextSignPHP;
 
 use Symfony\Component\HttpClient\HttpClient;
+use Symfony\Component\HttpClient\HttpOptions;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 use function Safe\json_decode;
+use function Safe\json_encode;
 
 class NextSignClient
 {
-    private const TOKEN_URI = "http://localhost:33080/v1/token";
-    private const DEFAULT_CLIENT_OPTIONS = [
-        'headers' => [
-            'Content-Type' => 'application/json',
-        ]
+    private const TOKEN_URI = "http://nginx/v1/token";
+    private const DEFAULT_CLIENT_HEADERS = [
+        'Content-Type' => 'application/json'
     ];
 
     private string $token;
@@ -26,7 +26,10 @@ class NextSignClient
     )
     {
         if($httpClient === null){
-            $this->client = HttpClient::create(self::DEFAULT_CLIENT_OPTIONS);
+            $this->client = HttpClient::create()->withOptions((new HttpOptions())
+                ->setHeaders(self::DEFAULT_CLIENT_HEADERS)
+                ->toArray()
+            );
         }
         else{
             $this->client = $httpClient;
@@ -39,10 +42,10 @@ class NextSignClient
             "POST",
             self::TOKEN_URI,
             [
-                "body" => [
+                "body" => json_encode([
                     "client_id" => $client_id, 
                     "client_secret" => $client_secret
-                ]
+                ]),
             ]
         );
         /** @var object{token: string} $date */

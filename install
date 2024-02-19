@@ -1,8 +1,9 @@
 #!/bin/bash
 
 (
-    cd docker 
-    docker compose build nextsign-php-php
+    cd docker/php 
+    docker build -t nextsign-php-interpreter:latest .
+    #docker compose build nextsign-php-php
 )
 
 bin/composer install

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d4b2073c7ee3d04e97dfc597c5a84537",
+    "content-hash": "d0897e5599ba5b7f9363a9142e2ccf69",
     "packages": [
         {
             "name": "doctrine/cache",
@@ -648,16 +648,16 @@
         },
         {
             "name": "doctrine/inflector",
-            "version": "2.0.9",
+            "version": "2.0.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/inflector.git",
-                "reference": "2930cd5ef353871c821d5c43ed030d39ac8cfe65"
+                "reference": "5817d0659c5b50c9b950feb9af7b9668e2c436bc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/inflector/zipball/2930cd5ef353871c821d5c43ed030d39ac8cfe65",
-                "reference": "2930cd5ef353871c821d5c43ed030d39ac8cfe65",
+                "url": "https://api.github.com/repos/doctrine/inflector/zipball/5817d0659c5b50c9b950feb9af7b9668e2c436bc",
+                "reference": "5817d0659c5b50c9b950feb9af7b9668e2c436bc",
                 "shasum": ""
             },
             "require": {
@@ -719,7 +719,7 @@
             ],
             "support": {
                 "issues": "https://github.com/doctrine/inflector/issues",
-                "source": "https://github.com/doctrine/inflector/tree/2.0.9"
+                "source": "https://github.com/doctrine/inflector/tree/2.0.10"
             },
             "funding": [
                 {
@@ -735,7 +735,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-01-15T18:05:13+00:00"
+            "time": "2024-02-18T20:23:39+00:00"
         },
         {
             "name": "doctrine/instantiator",
@@ -6968,16 +6968,16 @@
         },
         {
             "name": "squizlabs/php_codesniffer",
-            "version": "3.8.1",
+            "version": "3.9.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHPCSStandards/PHP_CodeSniffer.git",
-                "reference": "14f5fff1e64118595db5408e946f3a22c75807f7"
+                "reference": "d63cee4890a8afaf86a22e51ad4d97c91dd4579b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHPCSStandards/PHP_CodeSniffer/zipball/14f5fff1e64118595db5408e946f3a22c75807f7",
-                "reference": "14f5fff1e64118595db5408e946f3a22c75807f7",
+                "url": "https://api.github.com/repos/PHPCSStandards/PHP_CodeSniffer/zipball/d63cee4890a8afaf86a22e51ad4d97c91dd4579b",
+                "reference": "d63cee4890a8afaf86a22e51ad4d97c91dd4579b",
                 "shasum": ""
             },
             "require": {
@@ -7044,7 +7044,7 @@
                     "type": "open_collective"
                 }
             ],
-            "time": "2024-01-11T20:47:48+00:00"
+            "time": "2024-02-16T15:06:51+00:00"
         },
         {
             "name": "symfony/process",
