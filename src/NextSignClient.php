@@ -9,6 +9,13 @@ use function Safe\json_decode;
 
 class NextSignClient
 {
+    private const TOKEN_URI = "http://localhost:33080/v1/token";
+    private const DEFAULT_CLIENT_OPTIONS = [
+        'headers' => [
+            'Content-Type' => 'application/json',
+        ]
+    ];
+
     private string $token;
     private HttpClientInterface $client;
 
@@ -19,19 +26,18 @@ class NextSignClient
     )
     {
         if($httpClient === null){
-            $this->client = HttpClient::create([
-                'headers' => [
-                    'Content-Type' => 'application/json',
-                ]
-            ]);
+            $this->client = HttpClient::create(self::DEFAULT_CLIENT_OPTIONS);
         }
         else{
             $this->client = $httpClient;
         }
+        $this->token = $this->requestToken($client_id, $client_secret);
+    }
 
+    private function requestToken(string $client_id, string $client_secret){
         $response = $this->client->request(
             "POST",
-            "http://localhost:33080/v1/token",
+            self::TOKEN_URI,
             [
                 "body" => [
                     "client_id" => $client_id, 
@@ -41,6 +47,6 @@ class NextSignClient
         );
         /** @var object{token: string} $date */
         $data = json_decode($response->getContent());
-        $this->token = $data->token;
+        return $data->token;
     }
 }
