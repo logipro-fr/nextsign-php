@@ -46,7 +46,7 @@ class NextSignClientTest extends TestCase
         $id = "634d74c96825d";
         $secret = "sk_example1234";
 
-        $file       = new Document("tests/examples/fp.PDF");
+        $file       = new Document("tests/examples/lorem.PDF");
         $user       = new User("634d74c96825d", "Maelle Bellanger", "123456789abcd", "maelle.b@yopmail.com");
         $mark       = new SignatureMark("grigri", 1, 1, 1, 1.1, 1.1);
         $signer     = new Signer("Olivier", "Armstrong", "o.armstrong@amestris.gov", "01 23 45 67 89", "", [$mark]);

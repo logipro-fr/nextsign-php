@@ -10,7 +10,7 @@ class DocumentTest extends TestCase
 {
     public function testConstruct(): void
     {
-        $document = new Document("tests/examples/fp.PDF");
+        $document = new Document("tests/examples/lorem.PDF");
         $this->assertInstanceOf(Document::class, $document);
     }
     public function testFailConstruct(): void
