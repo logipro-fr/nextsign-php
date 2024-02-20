@@ -2,6 +2,11 @@
 
 namespace NextSignPHP;
 
+use NextSignPHP\Domain\Model\DTO\Document;
+use NextSignPHP\Domain\Model\DTO\Signer;
+use NextSignPHP\Domain\Model\DTO\TransactionId;
+use NextSignPHP\Domain\Model\DTO\User;
+use NextSignPHP\Domain\Model\NextSign\TransactionType;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\HttpClient\HttpOptions;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
@@ -12,6 +17,7 @@ use function Safe\json_encode;
 class NextSignClient
 {
     private const TOKEN_URI = "v1/token";
+    private const CREATE_TRANSACTION_URI = "v1/transaction";
     private const DEFAULT_CLIENT_HEADERS = [
         'Content-Type' => 'application/json'
     ];
@@ -53,5 +59,39 @@ class NextSignClient
         /** @var object{token: string} $data */
         $data = json_decode($response->getContent());
         return $data->token;
+    }
+
+    /**
+     * @param array<Signer> $signers
+     */
+    public function createTransaction(
+        string $name,
+        TransactionType $type,
+        User $user,
+        Document $document,
+        array $signers
+    ): TransactionId {
+        $response = $this->client->request(
+            "POST",
+            $this->baseApiUrl . self::CREATE_TRANSACTION_URI,
+            [
+                "body" => json_encode([
+                    "transactionName" => $name,
+                    "strategy" => $type,
+                    "document" => $document,
+                    "accountId" => $user->accountId,
+                    "contractorName" => $user->contractorName,
+                    "contractorUserId" => $user->contractorUserId,
+                    "contractorEmail" => $user->contractorEmail,
+                    "signers" => $signers
+                ]),
+                "headers" => [
+                    "Authorization" => "Bearer " . $this->token
+                ]
+            ]
+        );
+        /** @var object{data: object{transactionId: string}} $data */
+        $data = json_decode($response->getContent());
+        return new TransactionId($data->data->transactionId);
     }
 }

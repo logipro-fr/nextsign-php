@@ -10,6 +10,7 @@ default:
       paths: ["%paths.base%/features/"]
       contexts:
         - features\InstanciateContext
+        - features\CreateTransactionContext
 #  extensions:
 #    DVDoug\Behat\CodeCoverage\Extension:
 #      filter:
