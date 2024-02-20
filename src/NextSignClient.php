@@ -2,6 +2,11 @@
 
 namespace NextSignPHP;
 
+use NextSignPHP\Domain\Model\DTO\Document;
+use NextSignPHP\Domain\Model\DTO\Signer;
+use NextSignPHP\Domain\Model\DTO\TransactionId;
+use NextSignPHP\Domain\Model\DTO\User;
+use NextSignPHP\Domain\Model\NextSign\TransactionType;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\HttpClient\HttpOptions;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
@@ -53,5 +58,37 @@ class NextSignClient
         /** @var object{token: string} $data */
         $data = json_decode($response->getContent());
         return $data->token;
+    }
+
+    /**
+     * @param array<Signer> $signers
+     */
+    public function createTransaction(
+        string $name, 
+        TransactionType $type, 
+        User $user, 
+        Document $document, 
+        array $signers
+    ): TransactionId
+    {
+        $response = $this->client->request(
+            "POST",
+            $this->baseApiUrl . self::TOKEN_URI,
+            [
+                "body" => json_encode([
+                    "transactionName" => $name,
+                    "strategy" => $type,
+                    "document" => $document,
+                    "accountId" => $user->accountId,
+                    "contractorName" => $user->contractorName,
+                    "contractorUserId" => $user->contractorUserId,
+                    "contractorEmail" => $user->contractorEmail,
+                    "signers" => $signers
+                ]),
+            ]
+        );
+        /** @var object{data: object{transactionId: string}} $data */
+        $data = json_decode($response->getContent());
+        return new TransactionId($data->data->transactionId);
     }
 }
