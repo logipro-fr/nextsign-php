@@ -3,11 +3,12 @@
 namespace NextSignPHP\Domain\Model\DTO;
 
 use InvalidArgumentException;
+use JsonSerializable;
 use Symfony\Component\Filesystem\Path;
 
 use function Safe\file;
 
-class Document {
+class Document implements JsonSerializable{
     private string $type;
     private string $content;
     private string $name;
@@ -20,5 +21,14 @@ class Document {
         }
         $this->name = Path::getFilenameWithoutExtension($filepath, '');
         $this->content = base64_encode(implode(file($filepath)));
+    }
+
+    public function jsonSerialize(): mixed
+    {
+        return [
+            "type" => $this->type,
+            "content" => $this->content,
+            "name" => $this->name
+        ];
     }
 }

@@ -17,6 +17,7 @@ use function Safe\json_encode;
 class NextSignClient
 {
     private const TOKEN_URI = "v1/token";
+    private const CREATE_TRANSACTION_URI = "v1/transaction";
     private const DEFAULT_CLIENT_HEADERS = [
         'Content-Type' => 'application/json'
     ];
@@ -71,22 +72,28 @@ class NextSignClient
         array $signers
     ): TransactionId
     {
+        $body = [
+            "transactionName" => $name,
+            "strategy" => $type,
+            "document" => $document,
+            "accountId" => $user->accountId,
+            "contractorName" => $user->contractorName,
+            "contractorUserId" => $user->contractorUserId,
+            "contractorEmail" => $user->contractorEmail,
+            "signers" => $signers
+        ];
+        var_dump(json_encode($body));
         $response = $this->client->request(
             "POST",
-            $this->baseApiUrl . self::TOKEN_URI,
+            $this->baseApiUrl . self::CREATE_TRANSACTION_URI,
             [
-                "body" => json_encode([
-                    "transactionName" => $name,
-                    "strategy" => $type,
-                    "document" => $document,
-                    "accountId" => $user->accountId,
-                    "contractorName" => $user->contractorName,
-                    "contractorUserId" => $user->contractorUserId,
-                    "contractorEmail" => $user->contractorEmail,
-                    "signers" => $signers
-                ]),
+                "body" => json_encode($body),
+                "headers" => [
+                    "Authorization" => "Bearer " . $this->token
+                ]
             ]
         );
+        var_dump(json_decode($response->getContent(false)));
         /** @var object{data: object{transactionId: string}} $data */
         $data = json_decode($response->getContent());
         return new TransactionId($data->data->transactionId);

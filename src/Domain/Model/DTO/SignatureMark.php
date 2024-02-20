@@ -11,8 +11,8 @@ class SignatureMark
         public readonly int $page,
         public readonly int $left,
         public readonly int $top,
-        public readonly int $width,
-        public readonly int $height
+        public readonly float $width,
+        public readonly float $height
     )
     {
         
