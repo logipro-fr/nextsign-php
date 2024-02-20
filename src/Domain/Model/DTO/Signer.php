@@ -4,7 +4,11 @@ namespace NextSignPHP\Domain\Model\DTO;
 
 use JsonSerializable;
 
-class Signer implements JsonSerializable{
+class Signer implements JsonSerializable
+{
+    /**
+     * @param array<SignatureMark> $signature
+     */
     public function __construct(
         public readonly string $lastname,
         public readonly string $firstname,
@@ -12,12 +16,10 @@ class Signer implements JsonSerializable{
         public readonly string $phone,
         public readonly string $userId,
         public readonly array $signature
-    )
-    {
-        
+    ) {
     }
 
-    public function jsonSerialize(): array
+    public function jsonSerialize(): mixed
     {
         return [
             "lastname" => $this->lastname,

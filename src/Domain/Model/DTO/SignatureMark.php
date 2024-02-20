@@ -4,7 +4,7 @@ namespace NextSignPHP\Domain\Model\DTO;
 
 use JsonSerializable;
 
-class SignatureMark 
+class SignatureMark
 {
     public function __construct(
         public readonly string $type,
@@ -13,8 +13,6 @@ class SignatureMark
         public readonly int $top,
         public readonly float $width,
         public readonly float $height
-    )
-    {
-        
+    ) {
     }
 }

@@ -69,13 +69,14 @@ class NextSignClientTest extends TestCase
         new NextSignClient($id, $secret, $mockhttp);
     }
 
-    public function testCreateTransaction(){
+    public function testCreateTransaction(): void
+    {
         $id = "634d74c96825d";
         $secret = "sk_example1234";
 
         $mockhttp = $this->createMock(HttpClientInterface::class);
         $mockResponse = $this->createMock(ResponseInterface::class);
-        $mockResponse->method("getContent")->willReturn('{"token": "example"}','{
+        $mockResponse->method("getContent")->willReturn('{"token": "example"}', '{
             "success": true,
             "data": {
               "transactionId": "ns_tra_18c8b76ae6cc5474cccf596c2c",

@@ -65,35 +65,31 @@ class NextSignClient
      * @param array<Signer> $signers
      */
     public function createTransaction(
-        string $name, 
-        TransactionType $type, 
-        User $user, 
-        Document $document, 
+        string $name,
+        TransactionType $type,
+        User $user,
+        Document $document,
         array $signers
-    ): TransactionId
-    {
-        $body = [
-            "transactionName" => $name,
-            "strategy" => $type,
-            "document" => $document,
-            "accountId" => $user->accountId,
-            "contractorName" => $user->contractorName,
-            "contractorUserId" => $user->contractorUserId,
-            "contractorEmail" => $user->contractorEmail,
-            "signers" => $signers
-        ];
-        var_dump(json_encode($body));
+    ): TransactionId {
         $response = $this->client->request(
             "POST",
             $this->baseApiUrl . self::CREATE_TRANSACTION_URI,
             [
-                "body" => json_encode($body),
+                "body" => json_encode([
+                    "transactionName" => $name,
+                    "strategy" => $type,
+                    "document" => $document,
+                    "accountId" => $user->accountId,
+                    "contractorName" => $user->contractorName,
+                    "contractorUserId" => $user->contractorUserId,
+                    "contractorEmail" => $user->contractorEmail,
+                    "signers" => $signers
+                ]),
                 "headers" => [
                     "Authorization" => "Bearer " . $this->token
                 ]
             ]
         );
-        var_dump(json_decode($response->getContent(false)));
         /** @var object{data: object{transactionId: string}} $data */
         $data = json_decode($response->getContent());
         return new TransactionId($data->data->transactionId);

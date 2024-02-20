@@ -3,6 +3,7 @@
 namespace features;
 
 use Behat\Behat\Context\Context;
+use Behat\Behat\Tester\Exception\PendingException;
 use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
 
@@ -25,7 +26,7 @@ class CreateTransactionContext implements Context
     /**
      * @Given There is a api, a :file :arg1 and a :user :arg2
      */
-    public function thereIsAApiAFileAndAUser($arg1, $arg2)
+    public function thereIsAApiAFileAndAUser(string $arg1, string $arg2): void
     {
         throw new PendingException();
     }
@@ -33,7 +34,7 @@ class CreateTransactionContext implements Context
     /**
      * @When there is a demand to create a transaction
      */
-    public function thereIsADemandToCreateATransaction()
+    public function thereIsADemandToCreateATransaction(): void
     {
         throw new PendingException();
     }
@@ -41,7 +42,7 @@ class CreateTransactionContext implements Context
     /**
      * @Then the transaction is created and its ID is returned
      */
-    public function theTransactionIsCreatedAndItsIdIsReturned()
+    public function theTransactionIsCreatedAndItsIdIsReturned(): void
     {
         throw new PendingException();
     }
