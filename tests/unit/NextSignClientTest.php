@@ -5,6 +5,7 @@ namespace NextSignPHP\Tests;
 use NextSignPHP\Domain\Model\DTO\Document;
 use NextSignPHP\Domain\Model\DTO\SignatureMark;
 use NextSignPHP\Domain\Model\DTO\Signer;
+use NextSignPHP\Domain\Model\DTO\SignerDraft;
 use NextSignPHP\Domain\Model\DTO\TransactionId;
 use NextSignPHP\Domain\Model\DTO\User;
 use NextSignPHP\Domain\Model\NextSign\TransactionType;
@@ -95,6 +96,34 @@ class NextSignClientTest extends TestCase
         $signer     = new Signer("Olivier", "Armstrong", "o.armstrong@amestris.gov", "01 23 45 67 89", "", [$mark]);
 
         $transaction = $client->createTransaction("test", TransactionType::ALL_SIGNERS, $user, $file, [$signer]);
+        $this->assertEquals(new TransactionId("ns_tra_18c8b76ae6cc5474cccf596c2c"), $transaction);
+    }
+
+    public function testCreateTransactionDraft(): void
+    {
+        $id = "634d74c96825d";
+        $secret = "sk_example1234";
+
+        $mockhttp = $this->createMock(HttpClientInterface::class);
+        $mockResponse = $this->createMock(ResponseInterface::class);
+        $mockResponse->method("getContent")->willReturn('{"token": "example"}', '{
+            "success": true,
+            "data": {
+              "transactionId": "ns_tra_18c8b76ae6cc5474cccf596c2c",
+              "transactionEditorUrl": "https://app.nextsign.fr/prepare-transaction"
+            },
+            "error_code": 200,
+            "message": ""
+          }');
+        $mockhttp->method("request")->willReturn($mockResponse);
+
+        $client = new NextSignClient($id, $secret, $mockhttp, "http://example.com");
+
+        $file       = new Document("tests/examples/lorem.PDF");
+        $user       = new User("634d74c96825d", "Maelle Bellanger", "123456789abcd", "maelle.b@yopmail.com");
+        $signer     = new SignerDraft("Olivier", "Armstrong", "o.armstrong@amestris.gov", "01 23 45 67 89", "");
+
+        $transaction = $client->createTransactionDraft("test", TransactionType::ALL_SIGNERS, $user, $file, [$signer]);
         $this->assertEquals(new TransactionId("ns_tra_18c8b76ae6cc5474cccf596c2c"), $transaction);
     }
 }
