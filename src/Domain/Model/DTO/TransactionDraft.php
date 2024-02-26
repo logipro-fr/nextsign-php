@@ -7,8 +7,6 @@ class TransactionDraft
     public function __construct(
         public readonly TransactionId $id,
         public readonly string $editorUrl
-    )
-    {
-        
+    ) {
     }
 }

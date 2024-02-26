@@ -19,7 +19,7 @@ class NextSignClient
 {
     private const TOKEN_URI = "v1/token";
     private const CREATE_TRANSACTION_URI = "v1/transaction";
-    private const CREATE_TRANSACTION_DRAFT_URI = "v1/transactionDraft";
+    private const CREATE_TRANSACTION_DRAFT_URI = "v1/transaction-draft";
     private const DEFAULT_CLIENT_HEADERS = [
         'Content-Type' => 'application/json'
     ];
@@ -129,7 +129,7 @@ class NextSignClient
         /** @var object{data: object{transactionId: string}} $data */
         $data = json_decode($response->getContent());
         return new TransactionDraft(
-            new TransactionId($data->data->transactionId), 
+            new TransactionId($data->data->transactionId),
             $data->data->transactionEditorUrl
         );
     }
