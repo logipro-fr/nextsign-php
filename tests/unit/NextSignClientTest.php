@@ -112,7 +112,7 @@ class NextSignClientTest extends TestCase
         $mockResponse->method("getContent")->willReturn('{"token": "example"}', '{
             "success": true,
             "data": {
-              "transactionId": "' . $id . '",
+              "transactionDraftId": "' . $id . '",
               "transactionEditorUrl": "' . $url . '"
             },
             "error_code": 200,
