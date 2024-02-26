@@ -10,8 +10,7 @@ class SignerDraft implements JsonSerializable
         public readonly string $lastname,
         public readonly string $firstname,
         public readonly string $email,
-        public readonly string $phone,
-        public readonly string $userId
+        public readonly string $phone
     ) {
     }
 
@@ -21,8 +20,7 @@ class SignerDraft implements JsonSerializable
             "lastName" => $this->lastname,
             "firstName" => $this->firstname,
             "email" => $this->email,
-            "phone" => $this->phone,
-            "userId" => $this->userId
+            "phone" => $this->phone
         ];
     }
 }

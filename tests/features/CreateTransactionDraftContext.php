@@ -7,7 +7,7 @@ use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
 use NextSignPHP\Domain\Model\DTO\Document;
 use NextSignPHP\Domain\Model\DTO\SignerDraft;
-use NextSignPHP\Domain\Model\DTO\TransactionDraft;
+use NextSignPHP\Domain\Model\DTO\TransactionDraftAdress;
 use NextSignPHP\Domain\Model\DTO\User;
 use NextSignPHP\Domain\Model\NextSign\TransactionType;
 use NextSignPHP\NextSignClient;
@@ -33,13 +33,13 @@ class CreateTransactionDraftContext implements Context
 
     private NextSignClient $client;
     private string $file;
-    
+
     /**
      * @Given There is a api, a file :arg1 and a user but no marks
      */
     public function thereIsAApiAFileAndAUserButNoMarks($arg1)
     {
-        
+
         $mockhttp = new MockHttpClient([new MockResponse('{"token": "example"}'), new MockResponse('{
             "success": true,
             "data": {
@@ -53,13 +53,13 @@ class CreateTransactionDraftContext implements Context
         $this->file = $arg1;
     }
 
-    private TransactionDraft $result;
+    private TransactionDraftAdress $result;
     /**
      * @When there is a demand to create a transaction draft
      */
     public function thereIsADemandToCreateATransactionDraft()
     {
-        $file   = new Document($this->file);
+        $file   = Document::fromPath($this->file);
         $user   = new User("634d74c96825d", "Maelle Bellanger", "123456789abcd", "maelle.b@yopmail.com");
         $signer = new SignerDraft("Olivier", "Armstrong", "o.armstrong@amestris.gov", "01 23 45 67 89", "");
 
@@ -71,6 +71,6 @@ class CreateTransactionDraftContext implements Context
      */
     public function theTransactionIsCreatedAndIsReturned()
     {
-        Assert::assertInstanceOf(TransactionDraft::class, $this->result);
+        Assert::assertInstanceOf(TransactionDraftAdress::class, $this->result);
     }
 }

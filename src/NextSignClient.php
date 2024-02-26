@@ -6,6 +6,7 @@ use NextSignPHP\Domain\Model\DTO\Document;
 use NextSignPHP\Domain\Model\DTO\Signer;
 use NextSignPHP\Domain\Model\DTO\SignerDraft;
 use NextSignPHP\Domain\Model\DTO\TransactionDraft;
+use NextSignPHP\Domain\Model\DTO\TransactionDraftAdress;
 use NextSignPHP\Domain\Model\DTO\TransactionId;
 use NextSignPHP\Domain\Model\DTO\User;
 use NextSignPHP\Domain\Model\NextSign\TransactionType;
@@ -70,6 +71,7 @@ class NextSignClient
     public function createTransaction(
         string $name,
         TransactionType $type,
+        string $accountId,
         User $user,
         Document $document,
         array $signers
@@ -82,10 +84,10 @@ class NextSignClient
                     "transactionName" => $name,
                     "strategy" => $type,
                     "document" => $document,
-                    "accountId" => $user->accountId,
-                    "contractorName" => $user->contractorName,
-                    "contractorUserId" => $user->contractorUserId,
-                    "contractorEmail" => $user->contractorEmail,
+                    "accountId" => $accountId,
+                    "contractorName" => $user->name,
+                    "contractorUserId" => $user->userId,
+                    "contractorEmail" => $user->email,
                     "signers" => $signers
                 ]),
                 "headers" => [
@@ -104,10 +106,11 @@ class NextSignClient
     public function createTransactionDraft(
         string $name,
         TransactionType $type,
+        string $accountId,
         User $user,
         Document $document,
         array $signers
-    ): TransactionDraft {
+    ): TransactionDraftAdress {
         $response = $this->client->request(
             "POST",
             $this->baseApiUrl . self::CREATE_TRANSACTION_DRAFT_URI,
@@ -116,11 +119,11 @@ class NextSignClient
                     "transactionName" => $name,
                     "strategy" => $type,
                     "document" => $document,
-                    "accountId" => $user->accountId,
+                    "accountId" => $accountId,
                     "contractor" => [
-                        "name" => $user->contractorName,
-                        "userId" => $user->contractorUserId,
-                        "email" => $user->contractorEmail
+                        "name" => $user->name,
+                        "userId" => $user->userId,
+                        "email" => $user->email
                     ],
                     "signers" => $signers
                 ]),
@@ -131,9 +134,75 @@ class NextSignClient
         );
         /** @var object{data: object{transactionId: string, transactionEditorUrl: string}} $data */
         $data = json_decode($response->getContent());
-        return new TransactionDraft(
+        return new TransactionDraftAdress(
             new TransactionId($data->data->transactionDraftId),
             $data->data->transactionEditorUrl
+        );
+    }
+
+    public function getTransactionDraft(string $transactionDraftId): TransactionDraft
+    {
+
+        $response = $this->client->request(
+            "POST",
+            $this->baseApiUrl . self::CREATE_TRANSACTION_DRAFT_URI . "?",
+            [
+                "query" => [
+                    "transactionDraftId" => $transactionDraftId
+                ],
+                "headers" => [
+                    "Authorization" => "Bearer " . $this->token
+                ]
+            ]
+        );
+
+        /** @var object{
+         *      data: object{
+         *          transactionName: string, 
+         *          strategy: string,
+         *          accountId: string,
+         *          document: object{
+         *              type: string,
+         *              name: string,
+         *              content: string
+         *          },
+         *          contractor: object{
+         *              userId: string,
+         *              name: string,
+         *              email: string
+         *          },
+         *          signers: array<object{
+         *              firstName: string,
+         *              lastName: string,
+         *              phone: string,
+         *              email: string
+         *          }>
+         *      }
+         *  } $data 
+         */
+        $data = json_decode($response->getContent());
+        $user = new User(
+            $data->data->contractor->name, 
+            $data->data->contractor->userId, 
+            $data->data->contractor->email
+        );
+        $document = new Document(
+            $data->data->document->type,
+            $data->data->document->content,
+            $data->data->document->name
+        );
+        $signers = [];
+        foreach($data->data->signers as $signer){
+            $sign = new SignerDraft($signer->lastName, $signer->firstName, $signer->email, $signer->phone);
+            array_push($signers, $sign);
+        }
+        return new TransactionDraft(
+            $data->data->transactionName,
+            TransactionType::from($data->data->strategy),
+            $data->data->accountId,
+            $document,
+            $user,
+            $signers
         );
     }
 }

@@ -58,12 +58,20 @@ class CreateTransactionContext implements Context
      */
     public function thereIsADemandToCreateATransaction(): void
     {
-        $file       = new Document($this->file);
-        $user       = new User("634d74c96825d", "Maelle Bellanger", "123456789abcd", "maelle.b@yopmail.com");
+        $file       = Document::fromPath($this->file);
+        $user       = new User("Maelle Bellanger", "123456789abcd", "maelle.b@yopmail.com");
+        $id         = "634d74c96825d";
         $mark       = new SignatureMark("grigri", 1, 1, 1, 1, 1);
         $signer     = new Signer("Olivier", "Armstrong", "o.armstrong@amestris.gov", "01 23 45 67 89", "", [$mark]);
 
-        $this->result = $this->client->createTransaction("test", TransactionType::ALL_SIGNERS, $user, $file, [$signer]);
+        $this->result = $this->client->createTransaction(
+            "test", 
+            TransactionType::ALL_SIGNERS, 
+            $id, 
+            $user, 
+            $file, 
+            [$signer]
+        );
     }
 
     /**

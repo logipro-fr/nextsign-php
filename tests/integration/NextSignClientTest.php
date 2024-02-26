@@ -6,7 +6,7 @@ use NextSignPHP\Domain\Model\DTO\Document;
 use NextSignPHP\Domain\Model\DTO\SignatureMark;
 use NextSignPHP\Domain\Model\DTO\Signer;
 use NextSignPHP\Domain\Model\DTO\SignerDraft;
-use NextSignPHP\Domain\Model\DTO\TransactionDraft;
+use NextSignPHP\Domain\Model\DTO\TransactionDraftAdress;
 use NextSignPHP\Domain\Model\DTO\TransactionId;
 use NextSignPHP\Domain\Model\DTO\User;
 use NextSignPHP\Domain\Model\NextSign\TransactionType;
@@ -48,13 +48,14 @@ class NextSignClientTest extends TestCase
         $id = "634d74c96825d";
         $secret = "sk_example1234";
 
-        $file       = new Document("tests/examples/lorem.PDF");
-        $user       = new User("634d74c96825d", "Maelle Bellanger", "123456789abcd", "maelle.b@yopmail.com");
+        $file       = Document::fromPath("tests/examples/lorem.PDF");
+        $user       = new User("Maelle Bellanger", "123456789abcd", "maelle.b@yopmail.com");
+        $id         = "634d74c96825d";
         $mark       = new SignatureMark("grigri", 1, 1, 1, 1.1, 1.1);
         $signer     = [new Signer("Olivier", "Armstrong", "o.armstrong@amestris.gov", "01 23 45 67 89", "", [$mark])];
 
         $client = new NextSignClient($id, $secret);
-        $transaction = $client->createTransaction("test", TransactionType::ALL_SIGNERS, $user, $file, $signer);
+        $transaction = $client->createTransaction("test", TransactionType::ALL_SIGNERS, $id, $user, $file, $signer);
         $this->assertInstanceOf(TransactionId::class, $transaction);
     }
 
@@ -63,13 +64,21 @@ class NextSignClientTest extends TestCase
         $id = "634d74c96825d";
         $secret = "sk_example1234";
 
-        $file       = new Document("tests/examples/lorem.PDF");
-        $user       = new User("634d74c96825d", "Maelle Bellanger", "123456789abcd", "maelle.b@yopmail.com");
+        $file       = Document::fromPath("tests/examples/lorem.PDF");
+        $user       = new User("Maelle Bellanger", "123456789abcd", "maelle.b@yopmail.com");
+        $id         = "634d74c96825d";
         /** @var array<SignerDraft> $signer */
         $signer     = [new SignerDraft("Olivier", "Armstrong", "o.armstrong@amestris.gov", "01 23 45 67 89", "")];
 
         $client = new NextSignClient($id, $secret);
-        $transaction = $client->createTransactionDraft("test", TransactionType::ALL_SIGNERS, $user, $file, $signer);
-        $this->assertInstanceOf(TransactionDraft::class, $transaction);
+        $transaction = $client->createTransactionDraft(
+            "test", 
+            TransactionType::ALL_SIGNERS,
+            $id,
+            $user,
+            $file,
+            $signer
+        );
+        $this->assertInstanceOf(TransactionDraftAdress::class, $transaction);
     }
 }

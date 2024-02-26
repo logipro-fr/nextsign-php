@@ -13,15 +13,13 @@ class SignerDraftTest extends TestCase
         $firstname = "b";
         $email = "c";
         $phone = "d";
-        $userId = "e";
         $target = [
             "lastName" => $lastname,
             "firstName" => $firstname,
             "email" => $email,
-            "phone" => $phone,
-            "userId" => $userId
+            "phone" => $phone
         ];
-        $signer = new SignerDraft($lastname, $firstname, $email, $phone, $userId);
+        $signer = new SignerDraft($lastname, $firstname, $email, $phone);
 
         $this->assertEquals($target, $signer->jsonSerialize());
     }

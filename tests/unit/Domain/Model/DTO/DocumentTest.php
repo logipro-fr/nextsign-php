@@ -10,13 +10,13 @@ class DocumentTest extends TestCase
 {
     public function testConstruct(): void
     {
-        $document = new Document("tests/examples/lorem.PDF");
+        $document = Document::fromPath("tests/examples/lorem.PDF");
         $this->assertInstanceOf(Document::class, $document);
     }
     public function testFailConstruct(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage("type pda is not recognized");
-        $document = new Document("test.PDA");
+        $document = Document::fromPath("test.PDA");
     }
 }

@@ -6,7 +6,7 @@ use NextSignPHP\Domain\Model\DTO\Document;
 use NextSignPHP\Domain\Model\DTO\SignatureMark;
 use NextSignPHP\Domain\Model\DTO\Signer;
 use NextSignPHP\Domain\Model\DTO\SignerDraft;
-use NextSignPHP\Domain\Model\DTO\TransactionDraft;
+use NextSignPHP\Domain\Model\DTO\TransactionDraftAdress;
 use NextSignPHP\Domain\Model\DTO\TransactionId;
 use NextSignPHP\Domain\Model\DTO\User;
 use NextSignPHP\Domain\Model\NextSign\TransactionType;
@@ -16,6 +16,8 @@ use ReflectionClass;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Contracts\HttpClient\ResponseInterface;
+
+use function Safe\json_encode;
 
 class NextSignClientTest extends TestCase
 {
@@ -81,22 +83,23 @@ class NextSignClientTest extends TestCase
         $mockResponse->method("getContent")->willReturn('{"token": "example"}', '{
             "success": true,
             "data": {
-              "transactionId": "ns_tra_18c8b76ae6cc5474cccf596c2c",
-              "numberOfSignaturesUsed": 1
+                "transactionId": "ns_tra_18c8b76ae6cc5474cccf596c2c",
+                "numberOfSignaturesUsed": 1
             },
             "error_code": 200,
             "message": ""
-          }');
+            }');
         $mockhttp->method("request")->willReturn($mockResponse);
 
         $client = new NextSignClient($id, $secret, $mockhttp, "http://example.com");
 
-        $file       = new Document("tests/examples/lorem.PDF");
-        $user       = new User("634d74c96825d", "Maelle Bellanger", "123456789abcd", "maelle.b@yopmail.com");
+        $file       = Document::fromPath("tests/examples/lorem.PDF");
+        $user       = new User("Maelle Bellanger", "123456789abcd", "maelle.b@yopmail.com");
+        $id         = "634d74c96825d";
         $mark       = new SignatureMark("grigri", 1, 1, 1, 1, 1);
         $signer     = new Signer("Olivier", "Armstrong", "o.armstrong@amestris.gov", "01 23 45 67 89", "", [$mark]);
 
-        $transaction = $client->createTransaction("test", TransactionType::ALL_SIGNERS, $user, $file, [$signer]);
+        $transaction = $client->createTransaction("test", TransactionType::ALL_SIGNERS, $id, $user, $file, [$signer]);
         $this->assertEquals(new TransactionId("ns_tra_18c8b76ae6cc5474cccf596c2c"), $transaction);
     }
 
@@ -112,23 +115,71 @@ class NextSignClientTest extends TestCase
         $mockResponse->method("getContent")->willReturn('{"token": "example"}', '{
             "success": true,
             "data": {
-              "transactionDraftId": "' . $id . '",
-              "transactionEditorUrl": "' . $url . '"
+                "transactionDraftId": "' . $id . '",
+                "transactionEditorUrl": "' . $url . '"
             },
             "error_code": 200,
             "message": ""
-          }');
+            }');
         $mockhttp->method("request")->willReturn($mockResponse);
-        $target = new TransactionDraft(new TransactionId($id), $url);
+        $target = new TransactionDraftAdress(new TransactionId($id), $url);
 
         $client = new NextSignClient($id, $secret, $mockhttp, "http://example.com");
 
-        $file       = new Document("tests/examples/lorem.PDF");
+        $file       = Document::fromPath("tests/examples/lorem.PDF");
         $user       = new User("634d74c96825d", "Maelle Bellanger", "123456789abcd", "maelle.b@yopmail.com");
+        $id         = "634d74c96825d";
         /** @var array<SignerDraft> $signer */
         $signer     = [new SignerDraft("Olivier", "Armstrong", "o.armstrong@amestris.gov", "01 23 45 67 89", "")];
 
-        $transaction = $client->createTransactionDraft("test", TransactionType::ALL_SIGNERS, $user, $file, $signer);
+        $transaction = $client->createTransactionDraft(
+            "test", 
+            TransactionType::ALL_SIGNERS, 
+            $id, 
+            $user, 
+            $file,
+            $signer
+        );
         $this->assertEquals($target, $transaction);
+    }
+
+    public function testGetTransactionDraft(): void
+    {
+        $name = "test";
+        $type = TransactionType::ALL_SIGNERS;
+        $document = Document::fromPath("tests/examples/lorem.PDF");
+        $user = new User("Maelle Bellanger", "123456789abcd", "maelle.b@yopmail.com");
+        $id = "634d74c96825d";
+        $signers = [new SignerDraft("Olivier", "Armstrong", "o.armstrong@amestris.gov", "01 23 45 67 89", "")];
+        $data = [
+            "transactionName" => $name,
+            "strategy" => $type,
+            "accountId" => $id,
+            "document" => $document,
+            "contractor" => [
+                "name" => $user->name,
+                "userId" => $user->userId,
+                "email" => $user->email
+            ],
+            "signers" => $signers
+        ];
+        $result = json_encode([
+        "success" => true,
+        "data" => $data,
+        "error_code" => "",
+        "message" => ""
+        ]);
+
+        $mockhttp = $this->createMock(HttpClientInterface::class);
+        $mockResponse = $this->createMock(ResponseInterface::class);
+        $id = "ns_tra_18c8b76ae6cc5474cccf596c2c";
+        $url = "https://app.nextsign.fr/prepare-transaction";
+        $mockResponse->method("getContent")->willReturn('{"token": "example"}', $result);
+        $mockhttp->method("request")->willReturn($mockResponse);
+
+        $client = new NextSignClient("", "", $mockhttp, "http://example.com");
+        $transaction = $client->getTransactionDraft("test");
+
+        $this->assertEquals(json_encode($data, JSON_PRETTY_PRINT), json_encode($transaction, JSON_PRETTY_PRINT));
     }
 }

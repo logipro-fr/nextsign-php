@@ -10,21 +10,13 @@ use function Safe\file;
 
 class Document implements JsonSerializable
 {
-    private string $type;
-    private string $content;
-    private string $name;
-    public function __construct(string $filepath)
+    public function __construct(
+        private string $type,
+        private string $content,
+        private string $name
+    )
     {
-        switch (Path::getExtension($filepath, true)) {
-            case 'pdf':
-                $this->type = "pdf";
-                break;
-            default:
-                throw new InvalidArgumentException("type " . Path::getExtension($filepath, true) .
-                " is not recognized");
-        }
-        $this->name = Path::getFilenameWithoutExtension($filepath, '');
-        $this->content = base64_encode(implode(file($filepath)));
+        
     }
 
     public function jsonSerialize(): mixed
@@ -34,5 +26,20 @@ class Document implements JsonSerializable
             "content" => $this->content,
             "name" => $this->name
         ];
+    }
+
+    public static function fromPath(string $filepath): Document
+    {
+        switch (Path::getExtension($filepath, true)) {
+            case 'pdf':
+                $type = "pdf";
+                break;
+            default:
+                throw new InvalidArgumentException("type " . Path::getExtension($filepath, true) .
+                " is not recognized");
+        }
+        $name = Path::getFilenameWithoutExtension($filepath, '');
+        $content = base64_encode(implode(file($filepath)));
+        return new Document($type, $content, $name);
     }
 }
