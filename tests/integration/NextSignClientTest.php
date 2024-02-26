@@ -80,6 +80,9 @@ class NextSignClientTest extends TestCase
         );
         $this->assertInstanceOf(TransactionDraftAddress::class, $transaction);
     }
+    /**
+     * fails because of bugs on the api we are connecting to
+     */
     public function failingtestGetTransactionDraft(): void
     {
         $id = "634d74c96825d";
