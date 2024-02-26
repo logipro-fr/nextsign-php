@@ -132,7 +132,7 @@ class NextSignClient
         /** @var object{data: object{transactionId: string, transactionEditorUrl: string}} $data */
         $data = json_decode($response->getContent());
         return new TransactionDraft(
-            new TransactionId($data->data->transactionId),
+            new TransactionId($data->data->transactionDraftId),
             $data->data->transactionEditorUrl
         );
     }
