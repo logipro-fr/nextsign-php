@@ -43,7 +43,7 @@ class CreateTransactionDraftContext implements Context
         $mockhttp = new MockHttpClient([new MockResponse('{"token": "example"}'), new MockResponse('{
             "success": true,
             "data": {
-              "transactionId": "ns_tra_18c8b76ae6cc5474cccf596c2c",
+              "transactionDraftId": "ns_tra_18c8b76ae6cc5474cccf596c2c",
               "transactionEditorUrl": "https://app.nextsign.fr/prepare-transaction"
             },
             "error_code": 200,
