@@ -4,6 +4,7 @@ namespace NextSignPHP;
 
 use NextSignPHP\Domain\Model\DTO\Document;
 use NextSignPHP\Domain\Model\DTO\Signer;
+use NextSignPHP\Domain\Model\DTO\TransactionDraft;
 use NextSignPHP\Domain\Model\DTO\TransactionId;
 use NextSignPHP\Domain\Model\DTO\User;
 use NextSignPHP\Domain\Model\NextSign\TransactionType;
@@ -105,7 +106,7 @@ class NextSignClient
         User $user,
         Document $document,
         array $signers
-    ): TransactionId {
+    ): TransactionDraft {
         $response = $this->client->request(
             "POST",
             $this->baseApiUrl . self::CREATE_TRANSACTION_DRAFT_URI,
@@ -127,6 +128,9 @@ class NextSignClient
         );
         /** @var object{data: object{transactionId: string}} $data */
         $data = json_decode($response->getContent());
-        return new TransactionId($data->data->transactionId);
+        return new TransactionDraft(
+            new TransactionId($data->data->transactionId), 
+            $data->data->transactionEditorUrl
+        );
     }
 }
