@@ -12,6 +12,7 @@ default:
         - features\InstanciateContext
         - features\CreateTransactionContext
         - features\CreateTransactionDraftContext
+        - features\GetTransactionDraftContext
 #  extensions:
 #    DVDoug\Behat\CodeCoverage\Extension:
 #      filter:
