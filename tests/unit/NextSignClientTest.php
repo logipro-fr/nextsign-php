@@ -5,6 +5,8 @@ namespace NextSignPHP\Tests;
 use NextSignPHP\Domain\Model\DTO\Document;
 use NextSignPHP\Domain\Model\DTO\SignatureMark;
 use NextSignPHP\Domain\Model\DTO\Signer;
+use NextSignPHP\Domain\Model\DTO\SignerDraft;
+use NextSignPHP\Domain\Model\DTO\TransactionDraft;
 use NextSignPHP\Domain\Model\DTO\TransactionId;
 use NextSignPHP\Domain\Model\DTO\User;
 use NextSignPHP\Domain\Model\NextSign\TransactionType;
@@ -96,5 +98,37 @@ class NextSignClientTest extends TestCase
 
         $transaction = $client->createTransaction("test", TransactionType::ALL_SIGNERS, $user, $file, [$signer]);
         $this->assertEquals(new TransactionId("ns_tra_18c8b76ae6cc5474cccf596c2c"), $transaction);
+    }
+
+    public function testCreateTransactionDraft(): void
+    {
+        $id = "634d74c96825d";
+        $secret = "sk_example1234";
+
+        $mockhttp = $this->createMock(HttpClientInterface::class);
+        $mockResponse = $this->createMock(ResponseInterface::class);
+        $id = "ns_tra_18c8b76ae6cc5474cccf596c2c";
+        $url = "https://app.nextsign.fr/prepare-transaction";
+        $mockResponse->method("getContent")->willReturn('{"token": "example"}', '{
+            "success": true,
+            "data": {
+              "transactionId": "' . $id . '",
+              "transactionEditorUrl": "' . $url . '"
+            },
+            "error_code": 200,
+            "message": ""
+          }');
+        $mockhttp->method("request")->willReturn($mockResponse);
+        $target = new TransactionDraft(new TransactionId($id), $url);
+
+        $client = new NextSignClient($id, $secret, $mockhttp, "http://example.com");
+
+        $file       = new Document("tests/examples/lorem.PDF");
+        $user       = new User("634d74c96825d", "Maelle Bellanger", "123456789abcd", "maelle.b@yopmail.com");
+        /** @var array<SignerDraft> $signer */
+        $signer     = [new SignerDraft("Olivier", "Armstrong", "o.armstrong@amestris.gov", "01 23 45 67 89", "")];
+
+        $transaction = $client->createTransactionDraft("test", TransactionType::ALL_SIGNERS, $user, $file, $signer);
+        $this->assertEquals($target, $transaction);
     }
 }
