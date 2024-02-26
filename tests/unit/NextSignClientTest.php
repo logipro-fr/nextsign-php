@@ -125,9 +125,10 @@ class NextSignClientTest extends TestCase
 
         $file       = new Document("tests/examples/lorem.PDF");
         $user       = new User("634d74c96825d", "Maelle Bellanger", "123456789abcd", "maelle.b@yopmail.com");
-        $signer     = new SignerDraft("Olivier", "Armstrong", "o.armstrong@amestris.gov", "01 23 45 67 89", "");
+        /** @var array<SignerDraft> $signer */
+        $signer     = [new SignerDraft("Olivier", "Armstrong", "o.armstrong@amestris.gov", "01 23 45 67 89", "")];
 
-        $transaction = $client->createTransactionDraft("test", TransactionType::ALL_SIGNERS, $user, $file, [$signer]);
+        $transaction = $client->createTransactionDraft("test", TransactionType::ALL_SIGNERS, $user, $file, $signer);
         $this->assertEquals($target, $transaction);
     }
 }

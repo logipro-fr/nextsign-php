@@ -4,6 +4,7 @@ namespace NextSignPHP;
 
 use NextSignPHP\Domain\Model\DTO\Document;
 use NextSignPHP\Domain\Model\DTO\Signer;
+use NextSignPHP\Domain\Model\DTO\SignerDraft;
 use NextSignPHP\Domain\Model\DTO\TransactionDraft;
 use NextSignPHP\Domain\Model\DTO\TransactionId;
 use NextSignPHP\Domain\Model\DTO\User;
@@ -98,7 +99,7 @@ class NextSignClient
     }
 
     /**
-     * @param array<Signer> $signers
+     * @param array<SignerDraft> $signers
      */
     public function createTransactionDraft(
         string $name,
@@ -116,9 +117,11 @@ class NextSignClient
                     "strategy" => $type,
                     "document" => $document,
                     "accountId" => $user->accountId,
-                    "contractorName" => $user->contractorName,
-                    "contractorUserId" => $user->contractorUserId,
-                    "contractorEmail" => $user->contractorEmail,
+                    "contractor" => [
+                        "name" => $user->contractorName,
+                        "userId" => $user->contractorUserId,
+                        "email" => $user->contractorEmail
+                    ],
                     "signers" => $signers
                 ]),
                 "headers" => [
@@ -126,7 +129,7 @@ class NextSignClient
                 ]
             ]
         );
-        /** @var object{data: object{transactionId: string}} $data */
+        /** @var object{data: object{transactionId: string, transactionEditorUrl: string}} $data */
         $data = json_decode($response->getContent());
         return new TransactionDraft(
             new TransactionId($data->data->transactionId),
