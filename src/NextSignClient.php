@@ -132,7 +132,7 @@ class NextSignClient
                 ]
             ]
         );
-        /** @var object{data: object{transactionId: string, transactionEditorUrl: string}} $data */
+        /** @var object{data: object{transactionDraftId: string, transactionEditorUrl: string}} $data */
         $data = json_decode($response->getContent());
         return new TransactionDraftAddress(
             new TransactionId($data->data->transactionDraftId),
@@ -158,7 +158,7 @@ class NextSignClient
         );
 
         /** @var object{
-         *          transactionName: string, 
+         *          transactionName: string,
          *          strategy: string,
          *          accountId: string,
          *          document: object{
@@ -177,12 +177,12 @@ class NextSignClient
          *              phone: string,
          *              email: string
          *          }>
-         *  } $data 
+         *  } $data
          */
         $data = json_decode($response->getContent());
         $user = new User(
-            $data->contractor->fullName, 
-            $data->contractor->userId, 
+            $data->contractor->fullName,
+            $data->contractor->userId,
             $data->contractor->email
         );
         $document = new Document(
@@ -191,7 +191,7 @@ class NextSignClient
             $data->document->name
         );
         $signers = [];
-        foreach($data->signers as $signer){
+        foreach ($data->signers as $signer) {
             $sign = new SignerDraft($signer->firstname, $signer->lastname, $signer->email, $signer->phone);
             array_push($signers, $sign);
         }

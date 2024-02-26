@@ -128,15 +128,15 @@ class NextSignClientTest extends TestCase
         $client = new NextSignClient($id, $secret, $mockhttp, "http://example.com");
 
         $file       = Document::fromPath("tests/examples/lorem.PDF");
-        $user       = new User("634d74c96825d", "Maelle Bellanger", "123456789abcd", "maelle.b@yopmail.com");
+        $user       = new User("Maelle Bellanger", "123456789abcd", "maelle.b@yopmail.com");
         $id         = "634d74c96825d";
         /** @var array<SignerDraft> $signer */
-        $signer     = [new SignerDraft("Olivier", "Armstrong", "o.armstrong@amestris.gov", "01 23 45 67 89", "")];
+        $signer     = [new SignerDraft("Olivier", "Armstrong", "o.armstrong@amestris.gov", "01 23 45 67 89")];
 
         $transaction = $client->createTransactionDraft(
-            "test", 
-            TransactionType::ALL_SIGNERS, 
-            $user, 
+            "test",
+            TransactionType::ALL_SIGNERS,
+            $user,
             $file,
             $signer
         );
@@ -151,9 +151,9 @@ class NextSignClientTest extends TestCase
         $user = new User("Maelle Bellanger", "123456789abcd", "maelle.b@yopmail.com");
         $id = "634d74c96825d";
         $signers = [
-            "lastname" => "Armstrong", 
-            "firstname" => "Olivier", 
-            "email" => "o.armstrong@amestris.gov", 
+            "lastname" => "Armstrong",
+            "firstname" => "Olivier",
+            "email" => "o.armstrong@amestris.gov",
             "phone" => "01 23 45 67 89"
         ];
         $data = [
@@ -171,11 +171,11 @@ class NextSignClientTest extends TestCase
         $result = json_encode($data);
 
         $target = new TransactionDraft(
-            $name, 
-            $type, 
+            $name,
+            $type,
             $id,
-            $document, 
-            $user, 
+            $document,
+            $user,
             [new SignerDraft("Olivier", "Armstrong", "o.armstrong@amestris.gov", "01 23 45 67 89")]
         );
 

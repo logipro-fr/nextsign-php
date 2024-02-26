@@ -14,9 +14,7 @@ class Document implements JsonSerializable
         private string $type,
         private string $content,
         private string $name
-    )
-    {
-        
+    ) {
     }
 
     public function jsonSerialize(): mixed

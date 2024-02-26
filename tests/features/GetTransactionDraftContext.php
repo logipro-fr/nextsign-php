@@ -25,7 +25,7 @@ class GetTransactionDraftContext implements Context
     /**
      * @Given There is an id :arg1
      */
-    public function thereIsAnId($arg1)
+    public function thereIsAnId(string $arg1): void
     {
         throw new PendingException();
     }
@@ -33,7 +33,7 @@ class GetTransactionDraftContext implements Context
     /**
      * @When there is a demand to get the corresponding transaction draft
      */
-    public function thereIsADemandToGetTheCorrespondingTransactionDraft()
+    public function thereIsADemandToGetTheCorrespondingTransactionDraft(): void
     {
         throw new PendingException();
     }
@@ -41,7 +41,7 @@ class GetTransactionDraftContext implements Context
     /**
      * @Then the transaction draft is returned
      */
-    public function theTransactionDraftIsReturned()
+    public function theTransactionDraftIsReturned(): void
     {
         throw new PendingException();
     }

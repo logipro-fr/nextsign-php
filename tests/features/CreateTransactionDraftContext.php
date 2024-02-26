@@ -37,7 +37,7 @@ class CreateTransactionDraftContext implements Context
     /**
      * @Given There is a api, a file :arg1 and a user but no marks
      */
-    public function thereIsAApiAFileAndAUserButNoMarks($arg1)
+    public function thereIsAApiAFileAndAUserButNoMarks(string $arg1): void
     {
 
         $mockhttp = new MockHttpClient([new MockResponse('{"token": "example"}'), new MockResponse('{
@@ -57,19 +57,25 @@ class CreateTransactionDraftContext implements Context
     /**
      * @When there is a demand to create a transaction draft
      */
-    public function thereIsADemandToCreateATransactionDraft()
+    public function thereIsADemandToCreateATransactionDraft(): void
     {
         $file   = Document::fromPath($this->file);
-        $user   = new User("634d74c96825d", "Maelle Bellanger", "123456789abcd", "maelle.b@yopmail.com");
-        $signer = new SignerDraft("Olivier", "Armstrong", "o.armstrong@amestris.gov", "01 23 45 67 89", "");
+        $user   = new User("Maelle Bellanger", "123456789abcd", "maelle.b@yopmail.com");
+        $signer = new SignerDraft("Olivier", "Armstrong", "o.armstrong@amestris.gov", "01 23 45 67 89");
 
-        $this->result = $this->client->createTransactionDraft("test", TransactionType::ALL_SIGNERS, $user, $file, [$signer]);
+        $this->result = $this->client->createTransactionDraft(
+            "test",
+            TransactionType::ALL_SIGNERS,
+            $user,
+            $file,
+            [$signer]
+        );
     }
 
     /**
      * @Then the transaction is created and is returned
      */
-    public function theTransactionIsCreatedAndIsReturned()
+    public function theTransactionIsCreatedAndIsReturned(): void
     {
         Assert::assertInstanceOf(TransactionDraftAddress::class, $this->result);
     }

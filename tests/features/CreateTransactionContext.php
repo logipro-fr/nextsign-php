@@ -65,10 +65,10 @@ class CreateTransactionContext implements Context
         $signer     = new Signer("Olivier", "Armstrong", "o.armstrong@amestris.gov", "01 23 45 67 89", "", [$mark]);
 
         $this->result = $this->client->createTransaction(
-            "test", 
-            TransactionType::ALL_SIGNERS, 
-            $user, 
-            $file, 
+            "test",
+            TransactionType::ALL_SIGNERS,
+            $user,
+            $file,
             [$signer]
         );
     }
