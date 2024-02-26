@@ -7,7 +7,7 @@ use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
 use NextSignPHP\Domain\Model\DTO\Document;
 use NextSignPHP\Domain\Model\DTO\SignerDraft;
-use NextSignPHP\Domain\Model\DTO\TransactionDraftAdress;
+use NextSignPHP\Domain\Model\DTO\TransactionDraftAddress;
 use NextSignPHP\Domain\Model\DTO\User;
 use NextSignPHP\Domain\Model\NextSign\TransactionType;
 use NextSignPHP\NextSignClient;
@@ -53,7 +53,7 @@ class CreateTransactionDraftContext implements Context
         $this->file = $arg1;
     }
 
-    private TransactionDraftAdress $result;
+    private TransactionDraftAddress $result;
     /**
      * @When there is a demand to create a transaction draft
      */
@@ -71,6 +71,6 @@ class CreateTransactionDraftContext implements Context
      */
     public function theTransactionIsCreatedAndIsReturned()
     {
-        Assert::assertInstanceOf(TransactionDraftAdress::class, $this->result);
+        Assert::assertInstanceOf(TransactionDraftAddress::class, $this->result);
     }
 }

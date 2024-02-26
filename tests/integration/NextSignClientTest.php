@@ -6,7 +6,8 @@ use NextSignPHP\Domain\Model\DTO\Document;
 use NextSignPHP\Domain\Model\DTO\SignatureMark;
 use NextSignPHP\Domain\Model\DTO\Signer;
 use NextSignPHP\Domain\Model\DTO\SignerDraft;
-use NextSignPHP\Domain\Model\DTO\TransactionDraftAdress;
+use NextSignPHP\Domain\Model\DTO\TransactionDraft;
+use NextSignPHP\Domain\Model\DTO\TransactionDraftAddress;
 use NextSignPHP\Domain\Model\DTO\TransactionId;
 use NextSignPHP\Domain\Model\DTO\User;
 use NextSignPHP\Domain\Model\NextSign\TransactionType;
@@ -50,12 +51,11 @@ class NextSignClientTest extends TestCase
 
         $file       = Document::fromPath("tests/examples/lorem.PDF");
         $user       = new User("Maelle Bellanger", "123456789abcd", "maelle.b@yopmail.com");
-        $id         = "634d74c96825d";
         $mark       = new SignatureMark("grigri", 1, 1, 1, 1.1, 1.1);
         $signer     = [new Signer("Olivier", "Armstrong", "o.armstrong@amestris.gov", "01 23 45 67 89", "", [$mark])];
 
         $client = new NextSignClient($id, $secret);
-        $transaction = $client->createTransaction("test", TransactionType::ALL_SIGNERS, $id, $user, $file, $signer);
+        $transaction = $client->createTransaction("test", TransactionType::ALL_SIGNERS, $user, $file, $signer);
         $this->assertInstanceOf(TransactionId::class, $transaction);
     }
 
@@ -74,11 +74,29 @@ class NextSignClientTest extends TestCase
         $transaction = $client->createTransactionDraft(
             "test", 
             TransactionType::ALL_SIGNERS,
-            $id,
             $user,
             $file,
             $signer
         );
-        $this->assertInstanceOf(TransactionDraftAdress::class, $transaction);
+        $this->assertInstanceOf(TransactionDraftAddress::class, $transaction);
+    }
+    public function testGetTransactionDraft(): void
+    {
+        $id = "634d74c96825d";
+        $secret = "sk_example1234";
+
+        $name = "tester";
+        $type = TransactionType::ALL_SIGNERS;
+        $document = Document::fromPath("tests/examples/lorem.PDF");
+        $user = new User("Maelle Bellanger", "123456789abcd", "maelle.b@yopmail.com");
+        $signers = [new SignerDraft("Olivier", "Armstrong", "o.armstrong@amestris.gov", "01 23 45 67 89", "")];
+
+        $target = new TransactionDraft($name, $type, $id, $document, $user, $signers);
+
+        $client = new NextSignClient($id, $secret);
+        $adress = $client->createTransactionDraft($name, $type, $user, $document, $signers);
+        $transaction = $client->getTransactionDraft($adress->id->id);
+
+        $this->assertEquals($target, $transaction);
     }
 }

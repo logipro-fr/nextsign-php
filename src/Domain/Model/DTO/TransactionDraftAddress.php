@@ -2,7 +2,7 @@
 
 namespace NextSignPHP\Domain\Model\DTO;
 
-class TransactionDraftAdress
+class TransactionDraftAddress
 {
     public function __construct(
         public readonly TransactionId $id,

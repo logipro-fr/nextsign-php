@@ -67,7 +67,6 @@ class CreateTransactionContext implements Context
         $this->result = $this->client->createTransaction(
             "test", 
             TransactionType::ALL_SIGNERS, 
-            $id, 
             $user, 
             $file, 
             [$signer]

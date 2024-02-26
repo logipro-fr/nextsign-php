@@ -19,7 +19,7 @@ class SignerDraftTest extends TestCase
             "email" => $email,
             "phone" => $phone
         ];
-        $signer = new SignerDraft($lastname, $firstname, $email, $phone);
+        $signer = new SignerDraft($firstname, $lastname, $email, $phone);
 
         $this->assertEquals($target, $signer->jsonSerialize());
     }
