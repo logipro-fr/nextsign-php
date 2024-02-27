@@ -14,8 +14,6 @@ use NextSignPHP\Domain\Model\NextSign\TransactionType;
 use NextSignPHP\NextSignClient;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
-use Symfony\Component\HttpKernel\Exception\HttpException;
-use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use Symfony\Contracts\HttpClient\Exception\HttpExceptionInterface;
 
 class NextSignClientTest extends TestCase

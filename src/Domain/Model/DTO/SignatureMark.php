@@ -2,8 +2,6 @@
 
 namespace NextSignPHP\Domain\Model\DTO;
 
-use JsonSerializable;
-
 class SignatureMark
 {
     public function __construct(

@@ -3,8 +3,6 @@
 namespace features;
 
 use Behat\Behat\Context\Context;
-use Behat\Gherkin\Node\PyStringNode;
-use Behat\Gherkin\Node\TableNode;
 use NextSignPHP\Domain\Model\DTO\Document;
 use NextSignPHP\Domain\Model\DTO\SignerDraft;
 use NextSignPHP\Domain\Model\DTO\TransactionDraftAddress;

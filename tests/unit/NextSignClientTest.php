@@ -2,7 +2,6 @@
 
 namespace NextSignPHP\Tests;
 
-use Infection\Configuration\Schema\InvalidFile;
 use NextSignPHP\Domain\Model\DTO\Document;
 use NextSignPHP\Domain\Model\DTO\SignatureMark;
 use NextSignPHP\Domain\Model\DTO\Signer;
@@ -15,7 +14,6 @@ use NextSignPHP\Domain\Model\NextSign\TransactionType;
 use NextSignPHP\NextSignClient;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
-use Safe\Exceptions\SemException;
 use Symfony\Component\HttpClient\Exception\InvalidArgumentException;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
@@ -50,7 +48,7 @@ class NextSignClientTest extends TestCase
         $secret = "";
 
 
-        $client = new NextSignClient($id, $secret, null, "");
+        new NextSignClient($id, $secret, null, "");
     }
 
     public function testCreateCustomUrl(): void
