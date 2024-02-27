@@ -21,7 +21,7 @@ class NextSignClient
 {
     private const TOKEN_URI = "v1/token";
     private const CREATE_TRANSACTION_URI = "v1/transaction";
-    private const CREATE_TRANSACTION_DRAFT_URI = "v1/transaction-draft";
+    private const TRANSACTION_DRAFT_URI = "v1/transaction-draft";
     private const DEFAULT_CLIENT_HEADERS = [
         'Content-Type' => 'application/json'
     ];
@@ -43,11 +43,11 @@ class NextSignClient
         } else {
             $this->client = $httpClient;
         }
-        $this->token = $this->requestToken($client_id, $client_secret);
         if (!str_ends_with($this->baseApiUrl, "/")) {
             $this->baseApiUrl .= "/";
         }
         $this->id = $client_id;
+        $this->token = $this->requestToken($client_id, $client_secret);
     }
 
     private function requestToken(string $client_id, string $client_secret): string
@@ -113,7 +113,7 @@ class NextSignClient
     ): TransactionDraftAddress {
         $response = $this->client->request(
             "POST",
-            $this->baseApiUrl . self::CREATE_TRANSACTION_DRAFT_URI,
+            $this->baseApiUrl . self::TRANSACTION_DRAFT_URI,
             [
                 "body" => json_encode([
                     "transactionName" => $name,
@@ -145,7 +145,7 @@ class NextSignClient
 
         $response = $this->client->request(
             "GET",
-            $this->baseApiUrl . self::CREATE_TRANSACTION_DRAFT_URI,
+            $this->baseApiUrl . self::TRANSACTION_DRAFT_URI,
             [
                 "query" => [
                     "transactionDraftId" => $transactionDraftId
@@ -156,7 +156,6 @@ class NextSignClient
                 ]
             ]
         );
-
         /** @var object{
          *          transactionName: string,
          *          strategy: string,

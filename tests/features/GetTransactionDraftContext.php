@@ -15,6 +15,8 @@ use PHPUnit\Framework\Assert;
 use Symfony\Component\HttpClient\MockHttpClient;
 use Symfony\Component\HttpClient\Response\MockResponse;
 
+use function Safe\json_encode;
+
 /**
  * Defines application features from the specific context.
  */
@@ -54,7 +56,7 @@ class GetTransactionDraftContext implements Context
             "signers" => [$signers]
         ];
         $mockhttp = new MockHttpClient([
-            new MockResponse('{"token": "example"}'), 
+            new MockResponse('{"token": "example"}'),
             new MockResponse(json_encode($data))
         ]);
         $this->client = new NextSignClient("634d74c96825d", "sk_example1234", $mockhttp);
