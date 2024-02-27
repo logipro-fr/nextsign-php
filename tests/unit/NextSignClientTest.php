@@ -23,14 +23,18 @@ use function Safe\json_encode;
 
 class NextSignClientTest extends TestCase
 {
+    private const ID = '634d74c96825d';
+    private const SECRET = 'sk_example1234';
+    private const LOGIN_RESPONSE = '{"token": "example"}';
+
     public function testCreate(): void
     {
-        $id = "634d74c96825d";
-        $secret = "sk_example1234";
+        $id = self::ID;
+        $secret = self::SECRET;
 
         $mockhttp = $this->createMock(HttpClientInterface::class);
         $mockResponse = $this->createMock(ResponseInterface::class);
-        $mockResponse->method("getContent")->willReturn('{"token": "example"}');
+        $mockResponse->method("getContent")->willReturn(self::LOGIN_RESPONSE);
         $mockhttp->method("request")->willReturn($mockResponse);
 
         $client = new NextSignClient($id, $secret, $mockhttp);
@@ -53,12 +57,12 @@ class NextSignClientTest extends TestCase
 
     public function testCreateCustomUrl(): void
     {
-        $id = "634d74c96825d";
-        $secret = "sk_example1234";
+        $id = self::ID;
+        $secret = self::SECRET;
 
         $mockhttp = $this->createMock(HttpClientInterface::class);
         $mockResponse = $this->createMock(ResponseInterface::class);
-        $mockResponse->method("getContent")->willReturn('{"token": "example"}');
+        $mockResponse->method("getContent")->willReturn(self::LOGIN_RESPONSE);
         $mockhttp->method("request")->willReturn($mockResponse);
 
         $client = new NextSignClient($id, $secret, $mockhttp, "http://example.com");
@@ -88,12 +92,12 @@ class NextSignClientTest extends TestCase
 
     public function testCreateTransaction(): void
     {
-        $id = "634d74c96825d";
-        $secret = "sk_example1234";
+        $id = self::ID;
+        $secret = self::SECRET;
 
         $mockhttp = $this->createMock(HttpClientInterface::class);
         $mockResponse = $this->createMock(ResponseInterface::class);
-        $mockResponse->method("getContent")->willReturn('{"token": "example"}', '{
+        $mockResponse->method("getContent")->willReturn(self::LOGIN_RESPONSE, '{
             "success": true,
             "data": {
                 "transactionId": "ns_tra_18c8b76ae6cc5474cccf596c2c",
@@ -105,9 +109,8 @@ class NextSignClientTest extends TestCase
 
         $file       = Document::fromPath("tests/examples/lorem.PDF");
         $user       = new User("Maelle Bellanger", "123456789abcd", "maelle.b@yopmail.com");
-        $id         = "634d74c96825d";
         $mark       = new SignatureMark("grigri", 1, 1, 1, 1, 1);
-        $signer     = new Signer("Olivier", "Armstrong", "o.armstrong@amestris.gov", "01 23 45 67 89", "", [$mark]);
+        $signers    = [new Signer("Olivier", "Armstrong", "o.armstrong@amestris.gov", "01 23 45 67 89", "", [$mark])];
 
         $map = [
             [
@@ -122,7 +125,7 @@ class NextSignClientTest extends TestCase
                         "contractorName" => $user->name,
                         "contractorUserId" => $user->userId,
                         "contractorEmail" => $user->email,
-                        "signers" => [$signer]
+                        "signers" => $signers
                     ]),
                     "headers" => [
                         "Authorization" => "Bearer example"
@@ -130,36 +133,26 @@ class NextSignClientTest extends TestCase
                     ],
                     $mockResponse
             ],
-            [
-                "POST",
-                "http://example.com/v1/token",
-                [
-                    "body" => json_encode([
-                        "client_id" => $id,
-                        "client_secret" => $secret
-                    ]),
-                ],
-                $mockResponse
-            ]
+            $this->createTokenMap($id, $secret, $mockResponse)
         ];
         $mockhttp->method("request")->willReturnMap($map);
 
         $client = new NextSignClient($id, $secret, $mockhttp, "http://example.com");
 
-        $transaction = $client->createTransaction("test", TransactionType::ALL_SIGNERS, $user, $file, [$signer]);
+        $transaction = $client->createTransaction("test", TransactionType::ALL_SIGNERS, $user, $file, $signers);
         $this->assertEquals(new TransactionId("ns_tra_18c8b76ae6cc5474cccf596c2c"), $transaction);
     }
 
     public function testCreateTransactionDraft(): void
     {
-        $id = "634d74c96825d";
-        $secret = "sk_example1234";
+        $id = self::ID;
+        $secret = self::SECRET;
 
         $mockhttp = $this->createMock(HttpClientInterface::class);
         $mockResponse = $this->createMock(ResponseInterface::class);
         $id = "ns_tra_18c8b76ae6cc5474cccf596c2c";
         $url = "https://app.nextsign.fr/prepare-transaction";
-        $mockResponse->method("getContent")->willReturn('{"token": "example"}', '{
+        $mockResponse->method("getContent")->willReturn(self::LOGIN_RESPONSE, '{
             "success": true,
             "data": {
                 "transactionDraftId": "' . $id . '",
@@ -171,8 +164,7 @@ class NextSignClientTest extends TestCase
 
         $file       = Document::fromPath("tests/examples/lorem.PDF");
         $user       = new User("Maelle Bellanger", "123456789abcd", "maelle.b@yopmail.com");
-        /** @var array<SignerDraft> $signer */
-        $signer     = [new SignerDraft("Olivier", "Armstrong", "o.armstrong@amestris.gov", "01 23 45 67 89")];
+        $signers     = [new SignerDraft("Olivier", "Armstrong", "o.armstrong@amestris.gov", "01 23 45 67 89")];
 
         $map = [
             [
@@ -189,7 +181,7 @@ class NextSignClientTest extends TestCase
                             "userId" => $user->userId,
                             "email" => $user->email
                         ],
-                        "signers" => $signer
+                        "signers" => $signers
                     ]),
                     "headers" => [
                         "Authorization" => "Bearer example"
@@ -197,17 +189,7 @@ class NextSignClientTest extends TestCase
                     ],
                     $mockResponse
             ],
-            [
-                "POST",
-                "http://example.com/v1/token",
-                [
-                    "body" => json_encode([
-                        "client_id" => $id,
-                        "client_secret" => $secret
-                    ]),
-                ],
-                $mockResponse
-            ]
+            $this->createTokenMap($id, $secret, $mockResponse)
         ];
         $mockhttp->method("request")->willReturnMap($map);
 
@@ -221,7 +203,7 @@ class NextSignClientTest extends TestCase
             TransactionType::ALL_SIGNERS,
             $user,
             $file,
-            $signer
+            $signers
         );
         $this->assertEquals($target, $transaction);
     }
@@ -232,7 +214,7 @@ class NextSignClientTest extends TestCase
         $type = TransactionType::ALL_SIGNERS;
         $document = Document::fromPath("tests/examples/lorem.PDF");
         $user = new User("Maelle Bellanger", "123456789abcd", "maelle.b@yopmail.com");
-        $id = "634d74c96825d";
+        $id = self::ID;
         $signers = [
             "lastname" => "Armstrong",
             "firstname" => "Olivier",
@@ -265,8 +247,7 @@ class NextSignClientTest extends TestCase
         $mockhttp = $this->createMock(HttpClientInterface::class);
         $mockResponse = $this->createMock(ResponseInterface::class);
         $id = "ns_tra_18c8b76ae6cc5474cccf596c2c";
-        $url = "https://app.nextsign.fr/prepare-transaction";
-        $mockResponse->method("getContent")->willReturn('{"token": "example"}', $result);
+        $mockResponse->method("getContent")->willReturn(self::LOGIN_RESPONSE, $result);
         //$mockhttp->method("request")->willReturn($mockResponse);
 
 
@@ -285,17 +266,7 @@ class NextSignClientTest extends TestCase
                 ],
                 $mockResponse
             ],
-            [
-                "POST",
-                "http://example.com/v1/token",
-                [
-                    "body" => json_encode([
-                        "client_id" => "",
-                        "client_secret" => ""
-                    ]),
-                ],
-                $mockResponse
-            ]
+            $this->createTokenMap("", "", $mockResponse)
         ];
         $mockhttp->method("request")->willReturnMap($map);
 
@@ -303,5 +274,23 @@ class NextSignClientTest extends TestCase
         $transaction = $client->getTransactionDraft("test");
 
         $this->assertEquals($target, $transaction);
+    }
+
+    /**
+     * @return array<mixed>
+     */
+    private function createTokenMap(string $id, string $secret, ResponseInterface $response): array
+    {
+        return [
+            "POST",
+            "http://example.com/v1/token",
+            [
+                "body" => json_encode([
+                    "client_id" => $id,
+                    "client_secret" => $secret
+                ]),
+            ],
+            $response
+        ];
     }
 }

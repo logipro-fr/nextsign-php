@@ -18,12 +18,14 @@ use Symfony\Contracts\HttpClient\Exception\HttpExceptionInterface;
 
 class NextSignClientTest extends TestCase
 {
+    private const ID = '634d74c96825d';
+    private const SECRET = 'sk_example1234';
     private const TEST_API_ROOT = "http://nginx/";
 
     public function testCreate(): void
     {
-        $id = "634d74c96825d";
-        $secret = "sk_example1234";
+        $id = self::ID;
+        $secret = self::SECRET;
 
         $client = new NextSignClient($id, $secret, null, self::TEST_API_ROOT);
 
@@ -44,8 +46,8 @@ class NextSignClientTest extends TestCase
 
     public function testCreateTransaction(): void
     {
-        $id = "634d74c96825d";
-        $secret = "sk_example1234";
+        $id = self::ID;
+        $secret = self::SECRET;
 
         $file       = Document::fromPath("tests/examples/lorem.PDF");
         $user       = new User("Maelle Bellanger", "123456789abcd", "maelle.b@yopmail.com");
@@ -59,14 +61,14 @@ class NextSignClientTest extends TestCase
 
     public function testCreateTransactionDraft(): void
     {
-        $id = "634d74c96825d";
-        $secret = "sk_example1234";
+        $id = self::ID;
+        $secret = self::SECRET;
 
         $file       = Document::fromPath("tests/examples/lorem.PDF");
         $user       = new User("Maelle Bellanger", "123456789abcd", "maelle.b@yopmail.com");
-        $id         = "634d74c96825d";
-        /** @var array<SignerDraft> $signer */
-        $signer     = [new SignerDraft("Olivier", "Armstrong", "o.armstrong@amestris.gov", "01 23 45 67 89")];
+        $id         = self::ID;
+        /** @var array<SignerDraft> $signers */
+        $signers     = [new SignerDraft("Olivier", "Armstrong", "o.armstrong@amestris.gov", "01 23 45 67 89")];
 
         $client = new NextSignClient($id, $secret);
         $transaction = $client->createTransactionDraft(
@@ -74,7 +76,7 @@ class NextSignClientTest extends TestCase
             TransactionType::ALL_SIGNERS,
             $user,
             $file,
-            $signer
+            $signers
         );
         $this->assertInstanceOf(TransactionDraftAddress::class, $transaction);
     }
@@ -83,8 +85,8 @@ class NextSignClientTest extends TestCase
      */
     public function failingtestGetTransactionDraft(): void
     {
-        $id = "634d74c96825d";
-        $secret = "sk_example1234";
+        $id = self::ID;
+        $secret = self::SECRET;
 
         $name = "tester";
         $type = TransactionType::ALL_SIGNERS;
